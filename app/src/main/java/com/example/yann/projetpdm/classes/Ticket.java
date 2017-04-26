@@ -55,14 +55,14 @@ public class Ticket {
     }
 
     public boolean isValid(){
-        SimpleDateFormat dateFormat = TimeConvert.getDateFormat();
+        SimpleDateFormat dateFormat = DateHelper.getSimpleDateFormat();
         return  this.getDateFin().compareTo(new Date()) >= 0;
     }
 
     public Date getDateFin(){
         Date dateDebut = this.heureDebut;
         Date dateFin = dateDebut;
-        dateFin.setTime(dateDebut.getTime() + TimeConvert.minToMs(this.getDureeInitiale()) + TimeConvert.minToMs(this.getDureeSupp()));
+        dateFin.setTime(dateDebut.getTime() + DateHelper.convertMinToMilliseconds(this.getDureeInitiale()) + DateHelper.convertMinToMilliseconds(this.getDureeSupp()));
         return dateFin;
     }
 
@@ -75,7 +75,13 @@ public class Ticket {
     }
 
     public static ArrayList<Ticket> getTicketsValides(Context context, long idPersonne) {
-        return new TicketDAO(context).getTicketsValides(idPersonne);
+        ArrayList<Ticket> tickets = new TicketDAO(context).getTickets(idPersonne);
+        ArrayList<Ticket> tV = new ArrayList<Ticket>();
+        for(Ticket t : tickets){
+            if(t.isValid())
+                tV.add(t);
+        }
+        return tV;
     }
 
     public long getId() {

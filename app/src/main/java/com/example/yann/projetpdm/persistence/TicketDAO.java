@@ -6,7 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.example.yann.projetpdm.classes.Ticket;
-import com.example.yann.projetpdm.classes.TimeConvert;
+import com.example.yann.projetpdm.classes.DateHelper;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -118,24 +118,9 @@ public class TicketDAO {
         return tickets;
     }
 
-    public ArrayList<Ticket> getTicketsValides (long idPersonne){
-        ArrayList<Ticket> tickets = new ArrayList<Ticket>();
-        SQLiteDatabase mDB = new DatabaseObject(context).open();
-        Cursor c = mDB.rawQuery("select v." + listeAttributs + " from " + this.TABLE_NAME + " t " +
-                        "join Voiture v on t.idVoiture = v._ID" +
-                        " where v." + VoitureDAO.idConducteur + " = ? " +
-                        " and date (" + this.heureDebut + ", +" + this.dureeInitiale + " minutes, +" + this.dureeSupp + " minutes)"
-                , new String[]{String.valueOf(idPersonne)});
-        while (c.moveToNext()) {
-            tickets.add(cursorToTicket(c));
-        }
-        c.close();
-        return tickets;
-    }
-
     protected Ticket cursorToTicket(Cursor c){
         Ticket t ;
-        SimpleDateFormat dateFormat = TimeConvert.getDateFormat();
+        SimpleDateFormat dateFormat = DateHelper.getSimpleDateFormat();
         Date dateDemande = new Date();
         Date dateDebut = new Date();
         try {
